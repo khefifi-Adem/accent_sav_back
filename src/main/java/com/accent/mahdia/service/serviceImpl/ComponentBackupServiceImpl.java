@@ -1,11 +1,11 @@
 package com.accent.mahdia.service.serviceImpl;
 
-import com.accent.mahdia.dto.ComponentDto;
-import com.accent.mahdia.entities.Component;
-import com.accent.mahdia.repository.ComponentRepository;
+import com.accent.mahdia.dto.ComponentBackupDto;
+import com.accent.mahdia.entities.ComponentBackup;
+import com.accent.mahdia.repository.ComponentBackupRepository;
 import com.accent.mahdia.security.exception.ResourceAlreadyExistException;
 import com.accent.mahdia.security.exception.ResourceNotFoundException;
-import com.accent.mahdia.service.ComponentService;
+import com.accent.mahdia.service.ComponentBackupService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,60 +17,58 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class ComponentServiceImpl implements ComponentService {
+public class ComponentBackupServiceImpl implements ComponentBackupService {
 
     @Autowired
-    ComponentRepository componentRepository;
+    ComponentBackupRepository componentBackupRepository;
 
     @Autowired
     protected ModelMapper mapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(Component.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(ComponentBackup.class);
     @Override
-    public List<Component> findAllComponent() {
-        logger.info("===============================================");
-        logger.info("===============Get All Component===============");
-        logger.info("===============================================");
-        return componentRepository.findAllComponents();
+    public List<ComponentBackup> findAllComponent() {
+        logger.info("======================================================");
+        logger.info("===============Get All Component Backup===============");
+        logger.info("======================================================");
+        return componentBackupRepository.findAllComponents();
     }
 
     @Override
-    public ComponentDto addComponent(ComponentDto componentDto) {
+    public ComponentBackupDto addComponent(ComponentBackupDto componentDto) {
         try {
-            if (this.componentRepository.existsById(componentDto.getId())) {
+            if (this.componentBackupRepository.existsById(componentDto.getId())) {
                 // throw exception
                 throw new ResourceAlreadyExistException("Existing id " + componentDto.getId());
             }
 
-            Component component = this.mapper.map(componentDto, Component.class);
-            Component componentAdded = this.componentRepository.save(component);
-            logger.info("===============Component Added===============");
-            return this.mapper.map(componentAdded, ComponentDto.class);
+            ComponentBackup component = this.mapper.map(componentDto, ComponentBackup.class);
+            ComponentBackup componentAdded = this.componentBackupRepository.save(component);
+            logger.info("===============Component Backup Added===============");
+            return this.mapper.map(componentAdded, ComponentBackupDto.class);
         } catch (ResourceAlreadyExistException e) {
             // Log the exception
-            logger.error("Failed to add component with id: {}. Reason: {}", componentDto.getId(), e.getMessage());
+            logger.error("Failed to add component backup with id: {}. Reason: {}", componentDto.getId(), e.getMessage());
             // Return 409 Conflict status code
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Component with id " + componentDto.getId() + " already exists", e);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Component backup with id " + componentDto.getId() + " already exists", e);
         } catch (Exception e) {
             // Log any other unexpected exception
-            logger.error("Failed to add component. Reason: {}", e.getMessage());
+            logger.error("Failed to add component backup. Reason: {}", e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to add component", e);
-        }
-    }
+        }    }
 
     @Override
-    public ComponentDto updateComponentDto(ComponentDto componentDto) {
+    public ComponentBackupDto updateComponentDto(ComponentBackupDto componentDto) {
         try {
             if (componentDto != null) {
-                Component component = this.componentRepository.findById(componentDto.getId())
+                ComponentBackup component = this.componentBackupRepository.findById(componentDto.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Component with id " + componentDto.getId() + " not found"));
 
-                Component componentUpdate = this.mapper.map(componentDto, Component.class);
-                this.componentRepository.saveAndFlush(componentUpdate);
-                logger.info("===============Component Updated id: {}===============", componentUpdate.getId());
-                ComponentDto result = this.mapper.map(componentUpdate, ComponentDto.class);
+                ComponentBackup componentUpdate = this.mapper.map(componentDto, ComponentBackup.class);
+                this.componentBackupRepository.saveAndFlush(componentUpdate);
+                logger.info("===============Component Backup Updated id: {}===============", componentUpdate.getId());
+                ComponentBackupDto result = this.mapper.map(componentUpdate, ComponentBackupDto.class);
                 return result;
             } else {
                 // Log and return 400 Bad Request status code if componentDto is null
@@ -86,17 +84,16 @@ public class ComponentServiceImpl implements ComponentService {
             logger.error("Failed to update component. Reason: {}", e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update component", e);
-        }
-    }
+        }    }
 
     @Override
     public Boolean deleteComponent(int id) {
         try {
-            Component componentOld = this.componentRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Component with id " + id + " does not exist"));
+            ComponentBackup componentOld = this.componentBackupRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Component backup with id " + id + " does not exist"));
 
-            this.componentRepository.deleteById(id);
-            logger.info("===============Component Deleted id: {}===============", id);
+            this.componentBackupRepository.deleteById(id);
+            logger.info("===============Component backup Deleted id: {}===============", id);
             return true;
         } catch (ResourceNotFoundException e) {
             // Log and return 404 Not Found status code if component is not found
@@ -104,26 +101,25 @@ public class ComponentServiceImpl implements ComponentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (Exception e) {
             // Log any other unexpected exception
-            logger.error("Failed to delete component with id: {}. Reason: {}", id, e.getMessage());
+            logger.error("Failed to delete component backup with id: {}. Reason: {}", id, e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete component", e);
-        }
-    }
+        }    }
 
     @Override
-    public ComponentDto getComponentById(Integer idComponent) {
+    public ComponentBackupDto getComponentById(Integer idComponent) {
         try {
-            Component component = this.componentRepository.findByIdComponent(idComponent);
+            ComponentBackup component = this.componentBackupRepository.findByIdComponent(idComponent);
             if (component == null) {
-                logger.error("Component with ID {} does not exist.", idComponent);
+                logger.error("Component backup with ID {} does not exist.", idComponent);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Component with ID " + idComponent + " does not exist.");
             } else {
-                logger.info("Retrieved component with ID {} successfully.", idComponent);
-                return this.mapper.map(component, ComponentDto.class);
+                logger.info("Retrieved component backup with ID {} successfully.", idComponent);
+                return this.mapper.map(component, ComponentBackupDto.class);
             }
         } catch (Exception e) {
             // Log any unexpected exception
-            logger.error("Failed to retrieve component with ID {}: {}", idComponent, e.getMessage());
+            logger.error("Failed to retrieve component backup with ID {}: {}", idComponent, e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve component", e);
         }

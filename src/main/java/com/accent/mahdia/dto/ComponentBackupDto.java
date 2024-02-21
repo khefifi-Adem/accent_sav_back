@@ -1,9 +1,6 @@
 package com.accent.mahdia.dto;
 
-
-import java.util.List;
-
-public class ComponentDto {
+public class ComponentBackupDto {
 
     private int id;
 
@@ -11,16 +8,14 @@ public class ComponentDto {
 
     private Double value;
 
-
-    private List<ComponentDto> backupRef;
-
+    private ComponentDto backupRef;
     private CategoryComponentDto category;
 
-    public ComponentDto() {
+    public ComponentBackupDto() {
         super();
     }
 
-    public ComponentDto(int id, String reference, Double value, List<ComponentDto> backupRef, CategoryComponentDto category) {
+    public ComponentBackupDto(int id, String reference, Double value, ComponentDto backupRef, CategoryComponentDto category) {
         this.id = id;
         this.reference = reference;
         this.value = value;
@@ -51,11 +46,12 @@ public class ComponentDto {
     public void setValue(Double value) {
         this.value = value;
     }
-    public List<ComponentDto> getBackupRef() {
+
+    public ComponentDto getBackupRef() {
         return backupRef;
     }
 
-    public void setBackupRef(List<ComponentDto> backupRef) {
+    public void setBackupRef(ComponentDto backupRef) {
         this.backupRef = backupRef;
     }
 

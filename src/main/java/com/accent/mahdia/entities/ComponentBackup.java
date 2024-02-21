@@ -1,11 +1,12 @@
 package com.accent.mahdia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "component")
-public class Component {
+@Table(name = "component_backup")
+public class ComponentBackup {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,18 +18,19 @@ public class Component {
     @Column(name = "VALUE")
     private Double value;
 
-    @OneToMany
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "backup_ref")
-    private List<ComponentBackup> backupRef;
+    private Component backupRef;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryComponent category;
 
-    public Component() {
+
+    public ComponentBackup() {
         super();
     }
-
-    public Component(int id, String reference, Double value, List<ComponentBackup> backupRef, CategoryComponent category) {
+    public ComponentBackup(int id, String reference, Double value, Component backupRef, CategoryComponent category) {
         this.id = id;
         this.reference = reference;
         this.value = value;
@@ -60,11 +62,11 @@ public class Component {
         this.value = value;
     }
 
-    public List<ComponentBackup> getBackupRef() {
+    public Component getBackupRef() {
         return backupRef;
     }
 
-    public void setBackupRef(List<ComponentBackup> backupRef) {
+    public void setBackupRef(Component backupRef) {
         this.backupRef = backupRef;
     }
 
