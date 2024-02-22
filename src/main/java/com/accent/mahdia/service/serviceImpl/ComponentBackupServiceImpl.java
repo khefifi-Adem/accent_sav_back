@@ -66,7 +66,7 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
                         .orElseThrow(() -> new ResourceNotFoundException("Component with id " + componentDto.getId() + " not found"));
 
                 ComponentBackup componentUpdate = this.mapper.map(componentDto, ComponentBackup.class);
-                componentUpdate.setBackupRef(component.getBackupRef());
+//                componentUpdate.setBackupRef(component.getBackupRef());
                 this.componentBackupRepository.saveAndFlush(componentUpdate);
                 logger.info("===============Component Backup Updated id: {}===============", componentUpdate.getId());
                 ComponentBackupDto result = this.mapper.map(componentUpdate, ComponentBackupDto.class);
