@@ -1,11 +1,8 @@
 package com.accent.mahdia.service.serviceImpl;
 
 import com.accent.mahdia.dto.CategoryComponentDto;
-import com.accent.mahdia.dto.ComponentDto;
 import com.accent.mahdia.entities.CategoryComponent;
-import com.accent.mahdia.entities.Component;
 import com.accent.mahdia.repository.CategoryComponentRepository;
-import com.accent.mahdia.repository.ComponentRepository;
 import com.accent.mahdia.security.exception.ResourceAlreadyExistException;
 import com.accent.mahdia.security.exception.ResourceNotFoundException;
 import com.accent.mahdia.service.CategoryComponentService;
@@ -60,7 +57,8 @@ public class CategoryComponentServiceImpl implements CategoryComponentService {
             logger.error("Failed to add component. Reason: {}", e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to add category component", e);
-        }    }
+        }
+    }
 
     @Override
     public CategoryComponentDto updateCategoryComponentDto(CategoryComponentDto categoryComponentDto) {
@@ -88,7 +86,8 @@ public class CategoryComponentServiceImpl implements CategoryComponentService {
             logger.error("Failed to update category component. Reason: {}", e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update category component", e);
-        }    }
+        }
+    }
 
     @Override
     public Boolean deleteCategoryComponent(int idCategoryComponent) {

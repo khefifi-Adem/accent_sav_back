@@ -73,19 +73,20 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
                 return result;
             } else {
                 // Log and return 400 Bad Request status code if componentDto is null
-                logger.error("ComponentDto is null");
+                logger.error("ComponentBackupDto is null");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ComponentDto is null");
             }
         } catch (ResourceNotFoundException e) {
             // Log and return 404 Not Found status code if component is not found
-            logger.error("Failed to update component with id: {}. Reason: {}", componentDto.getId(), e.getMessage());
+            logger.error("Failed to update component component with id: {}. Reason: {}", componentDto.getId(), e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (Exception e) {
             // Log any other unexpected exception
-            logger.error("Failed to update component. Reason: {}", e.getMessage());
+            logger.error("Failed to update component backup. Reason: {}", e.getMessage());
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update component", e);
-        }    }
+        }
+    }
 
     @Override
     public Boolean deleteComponent(int id) {

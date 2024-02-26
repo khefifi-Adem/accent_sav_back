@@ -24,16 +24,21 @@ public class Component {
     @JoinColumn(name = "category_id")
     private CategoryComponent category;
 
+    @OneToMany
+    @JoinColumn(name = "model_comp")
+    private List<ModelComponent> modelComponents;
+
     public Component() {
         super();
     }
 
-    public Component(int id, String reference, Double value, List<ComponentBackup> backupRef, CategoryComponent category) {
+    public Component(int id, String reference, Double value, List<ComponentBackup> backupRef, CategoryComponent category, List<ModelComponent> modelComponents) {
         this.id = id;
         this.reference = reference;
         this.value = value;
         this.backupRef = backupRef;
         this.category = category;
+        this.modelComponents = modelComponents;
     }
 
     public int getId() {
@@ -74,5 +79,13 @@ public class Component {
 
     public void setCategory(CategoryComponent category) {
         this.category = category;
+    }
+
+    public List<ModelComponent> getModelComponents() {
+        return modelComponents;
+    }
+
+    public void setModelComponents(List<ModelComponent> modelComponents) {
+        this.modelComponents = modelComponents;
     }
 }
