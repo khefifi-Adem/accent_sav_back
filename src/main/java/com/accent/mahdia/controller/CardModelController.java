@@ -20,7 +20,6 @@ public class CardModelController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public @ResponseBody List<CardModel> findAllCardsModel() {
         return cardModelService.findAll();
-
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)

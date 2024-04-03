@@ -1,5 +1,6 @@
 package com.accent.mahdia.controller;
 
+import com.accent.mahdia.dto.CardSavDto;
 import com.accent.mahdia.dto.ComponentDto;
 import com.accent.mahdia.entities.Component;
 import com.accent.mahdia.service.ComponentService;
@@ -24,6 +25,10 @@ public class ComponentController {
     public @ResponseBody ComponentDto getComponentById (@PathVariable("id") Integer id) {
         return componentService.getComponentById(id);
     }
+    @RequestMapping(value = "/model/{id}", method = RequestMethod.GET)
+    public @ResponseBody List<Component> getComponentByIdModel (@PathVariable("id") Integer id) {
+        return componentService.findComponentsByIdModel(id);
+    }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody ComponentDto addComponent (@RequestBody ComponentDto componentDto) {
@@ -33,6 +38,11 @@ public class ComponentController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public @ResponseBody ComponentDto updateComponent (@RequestBody ComponentDto componentDto) {
         return componentService.updateComponentDto(componentDto);
+    }
+
+    @RequestMapping(value = "/update/quantity", method = RequestMethod.PUT)
+    public @ResponseBody Boolean updateComponentQuantity (@RequestBody CardSavDto[] cardSavDto) {
+        return componentService.updateComponentStock(cardSavDto);
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

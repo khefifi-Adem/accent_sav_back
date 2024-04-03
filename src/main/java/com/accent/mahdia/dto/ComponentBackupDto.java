@@ -1,5 +1,7 @@
 package com.accent.mahdia.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ComponentBackupDto {
 
     private int id;
@@ -8,7 +10,9 @@ public class ComponentBackupDto {
 
     private Double value;
 
+    @JsonIgnore
     private ComponentDto backupRef;
+
     private CategoryComponentDto category;
 
     public ComponentBackupDto() {

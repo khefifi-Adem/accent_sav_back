@@ -22,8 +22,8 @@ public class ModelComponentController {
 
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public @ResponseBody ModelComponentDto getModelComponenttById (@PathVariable("id") Integer id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody ModelComponentDto getModelComponentById (@PathVariable("id") Integer id) {
         return modelComponentService.getById(id);
     }
 
@@ -38,7 +38,7 @@ public class ModelComponentController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public boolean deleteCards(@PathVariable("id") int id) {
+    public boolean deleteModelComponents(@PathVariable("id") int id) {
         return modelComponentService.delete(id);
     }
 }

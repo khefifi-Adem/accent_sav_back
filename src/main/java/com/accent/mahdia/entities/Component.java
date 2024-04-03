@@ -1,5 +1,7 @@
 package com.accent.mahdia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,6 +19,9 @@ public class Component {
     @Column(name = "VALUE")
     private Double value;
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
     @OneToMany
     @JoinColumn(name = "backup_ref")
     private List<ComponentBackup> backupRef;
@@ -24,18 +29,20 @@ public class Component {
     @JoinColumn(name = "category_id")
     private CategoryComponent category;
 
+    @JsonIgnore
     @OneToMany
-    @JoinColumn(name = "model_comp")
+    @JoinColumn(name = "component_id")
     private List<ModelComponent> modelComponents;
 
     public Component() {
         super();
     }
 
-    public Component(int id, String reference, Double value, List<ComponentBackup> backupRef, CategoryComponent category, List<ModelComponent> modelComponents) {
+    public Component(int id, String reference, Double value, Integer quantity, List<ComponentBackup> backupRef, CategoryComponent category, List<ModelComponent> modelComponents) {
         this.id = id;
         this.reference = reference;
         this.value = value;
+        this.quantity = quantity;
         this.backupRef = backupRef;
         this.category = category;
         this.modelComponents = modelComponents;
@@ -63,6 +70,14 @@ public class Component {
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public List<ComponentBackup> getBackupRef() {

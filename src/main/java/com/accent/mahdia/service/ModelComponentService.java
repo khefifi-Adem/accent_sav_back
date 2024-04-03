@@ -16,5 +16,4 @@ public interface ModelComponentService {
     public Boolean delete (int id);
 
     ModelComponentDto getById(Integer id);
-
 }

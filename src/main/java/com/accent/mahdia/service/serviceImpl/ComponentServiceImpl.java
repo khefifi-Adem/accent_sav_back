@@ -1,7 +1,10 @@
 package com.accent.mahdia.service.serviceImpl;
 
+import com.accent.mahdia.dto.CardSavDto;
 import com.accent.mahdia.dto.ComponentDto;
 import com.accent.mahdia.entities.Component;
+import com.accent.mahdia.entities.ComponentQuantity;
+import com.accent.mahdia.entities.HistoriqueMaintenance;
 import com.accent.mahdia.repository.ComponentRepository;
 import com.accent.mahdia.security.exception.ResourceAlreadyExistException;
 import com.accent.mahdia.security.exception.ResourceNotFoundException;
@@ -33,6 +36,14 @@ public class ComponentServiceImpl implements ComponentService {
         logger.info("===============Get All Component===============");
         logger.info("===============================================");
         return componentRepository.findAllComponents();
+    }
+
+    @Override
+    public List<Component> findComponentsByIdModel(Integer idModel) {
+        logger.info("========================================================");
+        logger.info("===============Get All Component By Model===============");
+        logger.info("========================================================");
+        return componentRepository.findComponentsByIdModel(idModel);
     }
 
     @Override
@@ -88,6 +99,30 @@ public class ComponentServiceImpl implements ComponentService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update component", e);
         }
     }
+
+    @Override
+    public Boolean updateComponentStock(CardSavDto[] cardSavDtos) {
+        for (CardSavDto cardSavDto : cardSavDtos) {
+            if (cardSavDto != null) {
+                Component component = this.componentRepository.findById(cardSavDto.getComponentDto().getId())
+                        .orElseThrow(() -> new RuntimeException("Component not found with ID: " + cardSavDto.getComponentDto().getId()));
+                HistoriqueMaintenance historiqueMaintenance = new HistoriqueMaintenance();
+                ComponentQuantity componentQuantity = new ComponentQuantity();
+                int oldQuantity = component.getQuantity();
+                int newQuantity = oldQuantity - cardSavDto.getQuantity();
+                component.setQuantity(newQuantity);
+                this.componentRepository.saveAndFlush(component);
+
+                // Logging the updates
+                System.out.println("Component ID: " + component.getId() +
+                        ", Old Quantity: " + oldQuantity +
+                        ", Quantity to be deducted: " + cardSavDto.getQuantity() +
+                        ", New Quantity: " + newQuantity);
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public Boolean deleteComponent(int id) {

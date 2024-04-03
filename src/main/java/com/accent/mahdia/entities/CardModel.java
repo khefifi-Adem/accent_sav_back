@@ -1,5 +1,7 @@
 package com.accent.mahdia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,8 +16,9 @@ public class CardModel {
     @Column(name = "model", length = 50)
     private String model;
 
+    @JsonIgnore
     @OneToMany
-    @JoinColumn(name = "model_comp")
+    @JoinColumn(name = "model_id")
     private List<ModelComponent> modelComponents;
 
 

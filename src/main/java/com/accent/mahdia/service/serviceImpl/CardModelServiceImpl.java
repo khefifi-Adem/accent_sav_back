@@ -29,9 +29,9 @@ public class CardModelServiceImpl implements CardModelService {
 
     @Override
     public List<CardModel> findAll() {
-        logger.info("============================================");
+        logger.info("===============================================");
         logger.info("===============Get All CardModel===============");
-        logger.info("============================================");
+        logger.info("===============================================");
         return cardModelRepository.findAll();
     }
 

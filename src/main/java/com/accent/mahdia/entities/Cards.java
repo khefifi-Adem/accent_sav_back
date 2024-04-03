@@ -1,6 +1,7 @@
 package com.accent.mahdia.entities;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "card")
@@ -17,6 +18,12 @@ public class Cards {
     @Column(name = "num_serie", length = 50)
     private String numSerie;
 
+    @Column(name = "add_date")
+    private Date addDate;
+
+    @Column(name = "buy_date")
+    private Date buyDate;
+
     @ManyToOne
     @JoinColumn(name = "model_id")
     private CardModel cardModel;
@@ -29,10 +36,12 @@ public class Cards {
         super();
     }
 
-    public Cards(int id, String imei, String numSerie, CardModel cardModel, Client client) {
+    public Cards(int id, String imei, String numSerie, Date addDate, Date buyDate, CardModel cardModel, Client client) {
         this.id = id;
         this.imei = imei;
         this.numSerie = numSerie;
+        this.addDate = addDate;
+        this.buyDate = buyDate;
         this.cardModel = cardModel;
         this.client = client;
     }
@@ -59,6 +68,22 @@ public class Cards {
 
     public void setNumSerie(String numSerie) {
         this.numSerie = numSerie;
+    }
+
+    public Date getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(Date addDate) {
+        this.addDate = addDate;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
     }
 
     public CardModel getCardModel() {

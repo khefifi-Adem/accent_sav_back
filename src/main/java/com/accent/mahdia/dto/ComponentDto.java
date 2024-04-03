@@ -11,7 +11,9 @@ public class ComponentDto {
 
     private Double value;
 
-    private List<ComponentDto> backupRef;
+    private Integer quantity;
+
+    private List<ComponentBackupDto> backupRef;
 
     private CategoryComponentDto category;
 
@@ -21,10 +23,11 @@ public class ComponentDto {
         super();
     }
 
-    public ComponentDto(int id, String reference, Double value, List<ComponentDto> backupRef, CategoryComponentDto category, List<ModelComponentDto> modelComponents) {
+    public ComponentDto(int id, String reference, Double value, Integer quantity, List<ComponentBackupDto> backupRef, CategoryComponentDto category, List<ModelComponentDto> modelComponents) {
         this.id = id;
         this.reference = reference;
         this.value = value;
+        this.quantity = quantity;
         this.backupRef = backupRef;
         this.category = category;
         this.modelComponents = modelComponents;
@@ -54,11 +57,19 @@ public class ComponentDto {
         this.value = value;
     }
 
-    public List<ComponentDto> getBackupRef() {
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public List<ComponentBackupDto> getBackupRef() {
         return backupRef;
     }
 
-    public void setBackupRef(List<ComponentDto> backupRef) {
+    public void setBackupRef(List<ComponentBackupDto> backupRef) {
         this.backupRef = backupRef;
     }
 

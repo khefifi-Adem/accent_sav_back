@@ -1,5 +1,7 @@
 package com.accent.mahdia.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class CardModelDto {
@@ -7,7 +9,7 @@ public class CardModelDto {
     private int id;
 
     private String model;
-
+    @JsonIgnore
     private List<ModelComponentDto> modelComponents;
 
     public CardModelDto() {

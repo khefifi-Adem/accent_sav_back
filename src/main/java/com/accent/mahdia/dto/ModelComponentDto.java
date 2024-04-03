@@ -8,6 +8,7 @@ public class ModelComponentDto {
     private CardModelDto cardModel;
 
     private ComponentDto component;
+
     private Double quantity;
 
     public ModelComponentDto() {

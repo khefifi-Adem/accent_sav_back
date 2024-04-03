@@ -1,5 +1,7 @@
 package com.accent.mahdia.dto;
 
+import java.util.Date;
+
 public class CardsDto {
 
     private int id;
@@ -12,16 +14,22 @@ public class CardsDto {
 
     private ClientDto client;
 
+    private Date addDate;
+
+    private Date buyDate;
+
     public CardsDto() {
         super();
     }
 
-    public CardsDto(int id, String IMEI, String numSerie, CardModelDto cardModel, ClientDto client) {
+    public CardsDto(int id, String IMEI, String numSerie, CardModelDto cardModel, ClientDto client, Date addDate, Date buyDate) {
         this.id = id;
         this.IMEI = IMEI;
         this.numSerie = numSerie;
         this.cardModel = cardModel;
         this.client = client;
+        this.addDate = addDate;
+        this.buyDate = buyDate;
     }
 
     public int getId() {
@@ -62,5 +70,21 @@ public class CardsDto {
 
     public void setClient(ClientDto client) {
         this.client = client;
+    }
+
+    public Date getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(Date addDate) {
+        this.addDate = addDate;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
     }
 }

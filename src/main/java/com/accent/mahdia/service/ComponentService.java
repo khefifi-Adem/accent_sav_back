@@ -1,5 +1,6 @@
 package com.accent.mahdia.service;
 
+import com.accent.mahdia.dto.CardSavDto;
 import com.accent.mahdia.dto.ComponentDto;
 import com.accent.mahdia.entities.Component;
 
@@ -8,9 +9,14 @@ import java.util.List;
 public interface ComponentService {
 
     public List<Component> findAllComponent();
+
+    public List<Component> findComponentsByIdModel(Integer idModel);
+
     public ComponentDto addComponent(ComponentDto componentDto);
 
     public ComponentDto updateComponentDto(ComponentDto componentDto);
+
+    public Boolean updateComponentStock(CardSavDto[] cardSavDtos);
 
     public Boolean deleteComponent(int id);
 

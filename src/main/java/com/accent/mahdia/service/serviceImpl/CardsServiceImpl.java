@@ -1,10 +1,12 @@
 package com.accent.mahdia.service.serviceImpl;
 
+import com.accent.mahdia.dto.CardStockCountDto;
+import com.accent.mahdia.dto.CardsAddDto;
 import com.accent.mahdia.dto.CardsDto;
 import com.accent.mahdia.entities.Cards;
-import com.accent.mahdia.entities.Client;
+import com.accent.mahdia.entities.ModelHistory;
 import com.accent.mahdia.repository.CardsRepository;
-import com.accent.mahdia.security.exception.ResourceAlreadyExistException;
+import com.accent.mahdia.repository.ModelHistoryRepository;
 import com.accent.mahdia.security.exception.ResourceNotFoundException;
 import com.accent.mahdia.service.CardsService;
 import org.modelmapper.ModelMapper;
@@ -15,13 +17,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CardsServiceImpl implements CardsService {
 
     @Autowired
     CardsRepository cardsRepository;
+    @Autowired
+    ModelHistoryRepository modelHistoryRepository;
 
     @Autowired
     protected ModelMapper mapper;
@@ -37,58 +45,88 @@ public class CardsServiceImpl implements CardsService {
     }
 
     @Override
-    public CardsDto add(CardsDto cardsDto) {
-        try {
-            if (this.cardsRepository.existsById(cardsDto.getId())) {
-                // throw exception
-                throw new ResourceAlreadyExistException("Existing id " + cardsDto.getId());
-            }
-
-            Cards cards = this.mapper.map(cardsDto, Cards.class);
-            Cards cardsAdded = this.cardsRepository.save(cards);
-            logger.info("===============Cards Added===============");
-            return this.mapper.map(cardsAdded, CardsDto.class);
-        } catch (ResourceAlreadyExistException e) {
-            // Log the exception
-            logger.error("Failed to add cards with id: {}. Reason: {}", cardsDto.getId(), e.getMessage());
-            // Return 409 Conflict status code
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cards with id " + cardsDto.getId() + " already exists", e);
-        } catch (Exception e) {
-            // Log any other unexpected exception
-            logger.error("Failed to add cards. Reason: {}", e.getMessage());
-            // Return 500 Internal Server Error status code
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to add cards", e);
-        }
-    }
+    public List<Cards> getCardsByIdClient(Integer idClient) {
+        logger.info("====================================================");
+        logger.info("===============Get Cards By Id Client===============");
+        logger.info("====================================================");
+        return cardsRepository.getCardsByIdClient(idClient);    }
 
     @Override
-    public CardsDto update(CardsDto cardsDto) {
+    public List<Cards> add(CardsAddDto cardsAddDto) {
         try {
-            if (cardsDto != null) {
-                Cards cards = this.cardsRepository.findById(cardsDto.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Card with id " + cardsDto.getId() + " not found"));
+            List<Cards> cards = cardsAddDto.getCards();
 
-                Cards cardsUpdate = this.mapper.map(cardsDto, Cards.class);
-                this.cardsRepository.saveAndFlush(cardsUpdate);
-                logger.info("===============Card Updated id: {}===============", cardsUpdate.getId());
-                CardsDto result = this.mapper.map(cardsUpdate, CardsDto.class);
-                return result;
-            } else {
-                // Log and return 400 Bad Request status code if componentDto is null
-                logger.error("CardDto is null");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CategoryComponentDto is null");
+            // Set card model and add date for each card
+            LocalDate currentDate = LocalDate.now();
+            Date date = java.sql.Date.valueOf(currentDate);
+            List<Cards> savedCards = new ArrayList<Cards>();
+            for (Cards card: cards) {
+                card.setCardModel(cardsAddDto.getCardModel());
+                card.setAddDate(date);
+                savedCards.add(cardsRepository.save(card));
             }
-        } catch (ResourceNotFoundException e) {
-            // Log and return 404 Not Found status code if component is not found
-            logger.error("Failed to update CardDto with id: {}. Reason: {}", cardsDto.getId(), e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+
+            ModelHistory modelHistory = new ModelHistory();
+            modelHistory.setCardModel(cardsAddDto.getCardModel());
+            modelHistory.setTransaction(true);
+            modelHistory.setQuantity(savedCards.size());
+            modelHistory.setTransactionDate(date);
+            modelHistoryRepository.save(modelHistory);
+            // Save cards to the repository
+            return savedCards;
         } catch (Exception e) {
-            // Log any other unexpected exception
-            logger.error("Failed to update CardDto. Reason: {}", e.getMessage());
-            // Return 500 Internal Server Error status code
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update CardDto", e);
+            // Log the error for troubleshooting
+            logger.error("An error occurred while adding cards: " + e.getMessage());
+            // You might choose to handle or rethrow the exception depending on your requirements
+            throw new RuntimeException("Failed to add cards. Please try again later.");
         }
     }
+
+
+    @Override
+    public List<CardsDto> update(List<CardsDto> cardsDtoList) {
+        try {
+            // Validate input
+            if (cardsDtoList == null || cardsDtoList.isEmpty()) {
+                logger.error("CardsDto list is null or empty");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CardsDto list is null or empty");
+            }
+
+            // Retrieve all cards to be updated in a batch
+            List<Cards> cardsToUpdate = cardsDtoList.stream()
+                    .map(cardsDto -> cardsRepository.findById(cardsDto.getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Card with id " + cardsDto.getId() + " not found")))
+                    .collect(Collectors.toList());
+
+            // Update cards in batch
+            cardsToUpdate.forEach(cards -> {
+                // Update card entity with corresponding DTO values
+                CardsDto matchingDto = cardsDtoList.stream()
+                        .filter(dto -> dto.getId() == cards.getId())
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No matching DTO found for card id: " + cards.getId()));
+
+                mapper.map(matchingDto, cards);
+            });
+
+            // Save and flush changes to the database
+            cardsRepository.saveAll(cardsToUpdate);
+            cardsRepository.flush();
+
+            // Map updated card entities to DTOs and return
+            return cardsToUpdate.stream()
+                    .map(cards -> mapper.map(cards, CardsDto.class))
+                    .collect(Collectors.toList());
+
+        } catch (ResourceNotFoundException e) {
+            logger.error("Failed to update cards. Reason: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Failed to update cards. Reason: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update cards", e);
+        }
+    }
+
 
     @Override
     public Boolean delete(int id) {
@@ -114,13 +152,13 @@ public class CardsServiceImpl implements CardsService {
     @Override
     public CardsDto getById(Integer id) {
         try {
-            Client client = this.cardsRepository.findByIdCard(id);
-            if (client == null) {
+            Cards cards = this.cardsRepository.findByIdCard(id);
+            if (cards == null) {
                 logger.error("Card with ID {} does not exist.", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Card with ID " + id + " does not exist.");
             } else {
                 logger.info("Retrieved card with ID {} successfully.", id);
-                return this.mapper.map(client, CardsDto.class);
+                return this.mapper.map(cards, CardsDto.class);
             }
         } catch (Exception e) {
             // Log any unexpected exception
@@ -128,5 +166,21 @@ public class CardsServiceImpl implements CardsService {
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve card", e);
         }
+    }
+
+    public List<CardStockCountDto> mapStockCountResult(List<Object[]> stockCountResult) {
+        List<CardStockCountDto> dtos = new ArrayList<>();
+        for (Object[] row : stockCountResult) {
+            String model = (String) row[0];
+            Integer stock = ((Number) row[1]).intValue(); // Convert to Integer
+            dtos.add(new CardStockCountDto(model, stock));
+        }
+        return dtos;
+    }
+    @Override
+    public List<CardStockCountDto> getStockCount() {
+        List<Object[]> stockCountResult = this.cardsRepository.getStockCount();
+        List<CardStockCountDto> dtos = mapStockCountResult(stockCountResult);
+        return dtos;
     }
 }

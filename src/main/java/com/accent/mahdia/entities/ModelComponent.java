@@ -18,6 +18,7 @@ public class ModelComponent {
     @JoinColumn(name = "component_id")
     private Component component;
 
+    @Column(name = "quantity")
     private Double quantity;
 
     public ModelComponent() {
