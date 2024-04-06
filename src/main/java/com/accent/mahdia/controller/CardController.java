@@ -39,7 +39,7 @@ public class CardController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public @ResponseBody List   <Cards> addCards (@RequestBody CardsAddDto cardsAddDto) {
+    public @ResponseBody List<Cards> addCards (@RequestBody CardsAddDto cardsAddDto) {
         return cardsService.add(cardsAddDto);
     }
 

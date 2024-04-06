@@ -1,5 +1,7 @@
 package com.accent.mahdia.entities;
 
+import net.minidev.json.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -32,11 +34,15 @@ public class Cards {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "production_id")
+    private Production production;
+
     public Cards() {
         super();
     }
 
-    public Cards(int id, String imei, String numSerie, Date addDate, Date buyDate, CardModel cardModel, Client client) {
+    public Cards(int id, String imei, String numSerie, Date addDate, Date buyDate, CardModel cardModel, Client client, Production production) {
         this.id = id;
         this.imei = imei;
         this.numSerie = numSerie;
@@ -44,6 +50,7 @@ public class Cards {
         this.buyDate = buyDate;
         this.cardModel = cardModel;
         this.client = client;
+        this.production = production;
     }
 
     public int getId() {
@@ -100,5 +107,13 @@ public class Cards {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Production getProduction() {
+        return production;
+    }
+
+    public void setProduction(Production production) {
+        this.production = production;
     }
 }

@@ -13,7 +13,7 @@ public interface CardsService {
 
     public List<Cards> add(CardsAddDto cardsDto);
 
-    public List update(List<CardsDto> cardsDto);
+    public List<CardsDto> update(List<CardsDto> cardsDto);
 
     public Boolean delete (int id);
 

@@ -1,5 +1,7 @@
 package com.accent.mahdia.dto;
 
+import com.accent.mahdia.entities.Production;
+
 import java.util.Date;
 
 public class CardsDto {
@@ -18,11 +20,14 @@ public class CardsDto {
 
     private Date buyDate;
 
+    private ProductionDto production;
+
+
     public CardsDto() {
         super();
     }
 
-    public CardsDto(int id, String IMEI, String numSerie, CardModelDto cardModel, ClientDto client, Date addDate, Date buyDate) {
+    public CardsDto(int id, String IMEI, String numSerie, CardModelDto cardModel, ClientDto client, Date addDate, Date buyDate, ProductionDto production) {
         this.id = id;
         this.IMEI = IMEI;
         this.numSerie = numSerie;
@@ -30,6 +35,7 @@ public class CardsDto {
         this.client = client;
         this.addDate = addDate;
         this.buyDate = buyDate;
+        this.production = production;
     }
 
     public int getId() {
@@ -86,5 +92,13 @@ public class CardsDto {
 
     public void setBuyDate(Date buyDate) {
         this.buyDate = buyDate;
+    }
+
+    public ProductionDto getProduction() {
+        return production;
+    }
+
+    public void setProduction(ProductionDto production) {
+        this.production = production;
     }
 }

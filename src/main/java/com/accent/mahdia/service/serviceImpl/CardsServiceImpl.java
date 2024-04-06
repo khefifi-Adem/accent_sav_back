@@ -5,8 +5,10 @@ import com.accent.mahdia.dto.CardsAddDto;
 import com.accent.mahdia.dto.CardsDto;
 import com.accent.mahdia.entities.Cards;
 import com.accent.mahdia.entities.ModelHistory;
+import com.accent.mahdia.entities.Production;
 import com.accent.mahdia.repository.CardsRepository;
 import com.accent.mahdia.repository.ModelHistoryRepository;
+import com.accent.mahdia.repository.ProductionRepository;
 import com.accent.mahdia.security.exception.ResourceNotFoundException;
 import com.accent.mahdia.service.CardsService;
 import org.modelmapper.ModelMapper;
@@ -28,8 +30,12 @@ public class CardsServiceImpl implements CardsService {
 
     @Autowired
     CardsRepository cardsRepository;
+
     @Autowired
     ModelHistoryRepository modelHistoryRepository;
+
+    @Autowired
+    ProductionRepository productionRepository;
 
     @Autowired
     protected ModelMapper mapper;
@@ -60,18 +66,25 @@ public class CardsServiceImpl implements CardsService {
             LocalDate currentDate = LocalDate.now();
             Date date = java.sql.Date.valueOf(currentDate);
             List<Cards> savedCards = new ArrayList<Cards>();
+            Production production = new Production();
+            production.setDateProduction(date);
+            production.setCards(cards);
+            Production productionAdded = new Production();
+            productionAdded = productionRepository.save(production);
             for (Cards card: cards) {
                 card.setCardModel(cardsAddDto.getCardModel());
                 card.setAddDate(date);
+                card.setProduction(productionRepository.getOne(productionAdded.getId()));
                 savedCards.add(cardsRepository.save(card));
             }
-
             ModelHistory modelHistory = new ModelHistory();
             modelHistory.setCardModel(cardsAddDto.getCardModel());
             modelHistory.setTransaction(true);
             modelHistory.setQuantity(savedCards.size());
             modelHistory.setTransactionDate(date);
             modelHistoryRepository.save(modelHistory);
+
+
             // Save cards to the repository
             return savedCards;
         } catch (Exception e) {
@@ -104,7 +117,7 @@ public class CardsServiceImpl implements CardsService {
                 CardsDto matchingDto = cardsDtoList.stream()
                         .filter(dto -> dto.getId() == cards.getId())
                         .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("No matching DTO found for card id: " + cards.getId()));
+                        .orElseThrow(() -> new IllegalStateException("No matching cardsDTO found for card id: " + cards.getId()));
 
                 mapper.map(matchingDto, cards);
             });
