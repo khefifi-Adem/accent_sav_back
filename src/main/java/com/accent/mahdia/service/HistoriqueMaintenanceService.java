@@ -12,5 +12,4 @@ public interface HistoriqueMaintenanceService {
 
     public HistoriqueMaintenanceDto add(HistoriqueMaintenanceDto historiqueMaintenanceDto);
 
-
 }

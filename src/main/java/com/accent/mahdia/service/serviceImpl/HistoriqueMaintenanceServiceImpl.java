@@ -1,9 +1,11 @@
 package com.accent.mahdia.service.serviceImpl;
 
 import com.accent.mahdia.dto.HistoriqueMaintenanceDto;
+import com.accent.mahdia.entities.Component;
 import com.accent.mahdia.entities.ComponentQuantity;
 import com.accent.mahdia.entities.HistoriqueMaintenance;
 import com.accent.mahdia.repository.ComponentQuantityRepository;
+import com.accent.mahdia.repository.ComponentRepository;
 import com.accent.mahdia.repository.HistoriqueMaintenanceRepository;
 import com.accent.mahdia.service.HistoriqueMaintenanceService;
 import org.modelmapper.ModelMapper;
@@ -25,6 +27,9 @@ public class HistoriqueMaintenanceServiceImpl implements HistoriqueMaintenanceSe
 
     @Autowired
     ComponentQuantityRepository componentQuantityRepository;
+
+    @Autowired
+    ComponentRepository componentRepository;
 
     @Autowired
     protected ModelMapper mapper;
@@ -55,6 +60,9 @@ public class HistoriqueMaintenanceServiceImpl implements HistoriqueMaintenanceSe
             List<ComponentQuantity> componentQuantities = historiqueMaintenanceDto.getComponentQuantities().stream()
                     .map(componentQuantityDto -> {
                         ComponentQuantity componentQuantity = this.mapper.map(componentQuantityDto, ComponentQuantity.class);
+                        Component component = componentRepository.getOne(componentQuantity.getComponent().getId());
+                        component.setQuantity(component.getQuantity() - componentQuantity.getQuantity());
+                        componentRepository.saveAndFlush(component);
                         componentQuantity.setHistoriqueMaintenance(historiqueMaintenanceAdded);
                         return componentQuantity;
                     })
