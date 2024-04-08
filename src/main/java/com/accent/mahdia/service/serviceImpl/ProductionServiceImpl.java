@@ -1,6 +1,7 @@
 package com.accent.mahdia.service.serviceImpl;
 
 import com.accent.mahdia.dto.ClientDto;
+import com.accent.mahdia.dto.HistoiqueDto;
 import com.accent.mahdia.dto.ProductionDto;
 import com.accent.mahdia.entities.Client;
 import com.accent.mahdia.entities.Production;
@@ -13,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,5 +63,20 @@ public class ProductionServiceImpl implements ProductionService {
             // Return 500 Internal Server Error status code
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to add production", e);
         }
+    }
+
+    @Override
+    public List<HistoiqueDto> getProductionHistorique() {
+        List<Object[]> historique = this.productionRepository.getProductionHistorique();
+        List<HistoiqueDto> historiqueDtoList = new ArrayList<>();
+        for (Object[] row : historique) {
+            historiqueDtoList.add(new HistoiqueDto(
+                    (Integer)row[2],
+                    (String)row[1],
+                    (Date)row[3],
+                    ((BigInteger)row[0]).intValue()
+            ));
+        }
+        return historiqueDtoList;
     }
 }

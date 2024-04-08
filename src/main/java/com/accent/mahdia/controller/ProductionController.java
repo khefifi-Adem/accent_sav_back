@@ -1,6 +1,7 @@
 package com.accent.mahdia.controller;
 
 import com.accent.mahdia.dto.CardsAddDto;
+import com.accent.mahdia.dto.HistoiqueDto;
 import com.accent.mahdia.dto.ProductionDto;
 import com.accent.mahdia.entities.Cards;
 import com.accent.mahdia.entities.Production;
@@ -26,5 +27,10 @@ public class ProductionController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody ProductionDto addProduction (@RequestBody ProductionDto productionDto) {
         return productionService.add(productionDto);
+    }
+
+    @RequestMapping(value = "/gethistorique", method = RequestMethod.GET)
+    public @ResponseBody List<HistoiqueDto> getProductionHistorique () {
+        return productionService.getProductionHistorique();
     }
 }
