@@ -65,7 +65,7 @@ public class HistoiqueDto {
 
     public void setCard(int card) {
         this.card = card;
-        }
+    }
     public void setDate(Date date) {
         this.date = date;
     }
