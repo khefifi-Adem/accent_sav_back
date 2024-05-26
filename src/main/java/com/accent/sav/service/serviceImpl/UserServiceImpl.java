@@ -67,19 +67,19 @@ public class UserServiceImpl implements UserService {
             User userAdded = this.userRepository.save(user);
             //this.userRepository.save(userAdded);
             UserInfoDto returnedUser =  this.mapper.map(userAdded, UserInfoDto.class);
-            ConfirmationToken confirmationToken = new ConfirmationToken();
-            confirmationToken.setCreatedDate(userInfoDto.getCreatedDate());
-            confirmationToken.setConfirmationToken(UUID.randomUUID().toString());
-            confirmationToken.setUser(userAdded);
-            confirmationTokenRepository.save(confirmationToken);
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(user.getEmail());
-            mailMessage.setSubject("Complete Registration!");
-            mailMessage.setText("To confirm your account, please click here : "
-                    +"http://mahdia.ttn.tn/confirmation/"+confirmationToken.getConfirmationToken());
-            emailService.sendEmail(mailMessage);
-
-            System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
+//            ConfirmationToken confirmationToken = new ConfirmationToken();
+//            confirmationToken.setCreatedDate(userInfoDto.getCreatedDate());
+//            confirmationToken.setConfirmationToken(UUID.randomUUID().toString());
+//            confirmationToken.setUser(userAdded);
+//            confirmationTokenRepository.save(confirmationToken);
+//            SimpleMailMessage mailMessage = new SimpleMailMessage();
+//            mailMessage.setTo(user.getEmail());
+//            mailMessage.setSubject("Complete Registration!");
+//            mailMessage.setText("To confirm your account, please click here : "
+//                    +"http://mahdia.ttn.tn/confirmation/"+confirmationToken.getConfirmationToken());
+//            emailService.sendEmail(mailMessage);
+//
+//            System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
             return returnedUser;
         }
