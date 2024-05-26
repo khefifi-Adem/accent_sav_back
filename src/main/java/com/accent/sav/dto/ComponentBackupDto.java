@@ -1,7 +1,5 @@
 package com.accent.sav.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class ComponentBackupDto {
 
     private int id;
@@ -10,8 +8,7 @@ public class ComponentBackupDto {
 
     private Double value;
 
-    @JsonIgnore
-    private ComponentDto backupRef;
+    private int backupRef;
 
     private CategoryComponentDto category;
 
@@ -19,7 +16,7 @@ public class ComponentBackupDto {
         super();
     }
 
-    public ComponentBackupDto(int id, String reference, Double value, ComponentDto backupRef, CategoryComponentDto category) {
+    public ComponentBackupDto(int id, String reference, Double value, int backupRef, CategoryComponentDto category) {
         this.id = id;
         this.reference = reference;
         this.value = value;
@@ -51,11 +48,11 @@ public class ComponentBackupDto {
         this.value = value;
     }
 
-    public ComponentDto getBackupRef() {
+    public int getBackupRef() {
         return backupRef;
     }
 
-    public void setBackupRef(ComponentDto backupRef) {
+    public void setBackupRef(int backupRef) {
         this.backupRef = backupRef;
     }
 

@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ComponentBackupService {
     public List<ComponentBackup> findAllComponent();
-    public ComponentBackupDto addComponent(ComponentBackupDto componentDto);
+    public ComponentBackup addComponent(ComponentBackupDto componentDto);
 
-    public ComponentBackupDto updateComponentDto(ComponentBackupDto componentDto);
+    public ComponentBackup updateComponentDto(ComponentBackupDto componentDto);
 
     public Boolean deleteComponent(int id);
 

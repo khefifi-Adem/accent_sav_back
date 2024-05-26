@@ -1,8 +1,10 @@
 package com.accent.sav.service.serviceImpl;
 
 import com.accent.sav.dto.ComponentBackupDto;
+import com.accent.sav.entities.Component;
 import com.accent.sav.entities.ComponentBackup;
 import com.accent.sav.repository.ComponentBackupRepository;
+import com.accent.sav.repository.ComponentRepository;
 import com.accent.sav.security.exception.ResourceAlreadyExistException;
 import com.accent.sav.security.exception.ResourceNotFoundException;
 import com.accent.sav.service.ComponentBackupService;
@@ -21,6 +23,8 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
 
     @Autowired
     ComponentBackupRepository componentBackupRepository;
+    @Autowired
+    ComponentRepository componentRepository;
 
     @Autowired
     protected ModelMapper mapper;
@@ -35,7 +39,7 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
     }
 
     @Override
-    public ComponentBackupDto addComponent(ComponentBackupDto componentDto) {
+    public ComponentBackup addComponent(ComponentBackupDto componentDto) {
         try {
             if (this.componentBackupRepository.existsById(componentDto.getId())) {
                 // throw exception
@@ -43,9 +47,12 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
             }
 
             ComponentBackup component = this.mapper.map(componentDto, ComponentBackup.class);
+            Component comp = componentRepository.findByIdComponent(componentDto.getBackupRef());
+            component.setBackupRef(comp);
             ComponentBackup componentAdded = this.componentBackupRepository.save(component);
             logger.info("===============Component Backup Added===============");
-            return this.mapper.map(componentAdded, ComponentBackupDto.class);
+
+            return this.mapper.map(componentAdded, ComponentBackup.class);
         } catch (ResourceAlreadyExistException e) {
             // Log the exception
             logger.error("Failed to add component backup with id: {}. Reason: {}", componentDto.getId(), e.getMessage());
@@ -59,7 +66,7 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
         }    }
 
     @Override
-    public ComponentBackupDto updateComponentDto(ComponentBackupDto componentDto) {
+    public ComponentBackup updateComponentDto(ComponentBackupDto componentDto) {
         try {
             if (componentDto != null) {
                 ComponentBackup component = this.componentBackupRepository.findById(componentDto.getId())
@@ -67,9 +74,11 @@ public class ComponentBackupServiceImpl implements ComponentBackupService {
 
                 ComponentBackup componentUpdate = this.mapper.map(componentDto, ComponentBackup.class);
 //                componentUpdate.setBackupRef(component.getBackupRef());
+                Component comp = componentRepository.findByIdComponent(componentDto.getBackupRef());
+                componentUpdate.setBackupRef(comp);
                 this.componentBackupRepository.saveAndFlush(componentUpdate);
                 logger.info("===============Component Backup Updated id: {}===============", componentUpdate.getId());
-                ComponentBackupDto result = this.mapper.map(componentUpdate, ComponentBackupDto.class);
+                ComponentBackup result = this.mapper.map(componentUpdate, ComponentBackup.class);
                 return result;
             } else {
                 // Log and return 400 Bad Request status code if componentDto is null

@@ -26,12 +26,12 @@ public class ComponentBackupController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public @ResponseBody ComponentBackupDto addComponent (@RequestBody ComponentBackupDto componentBackupDto) {
+    public @ResponseBody ComponentBackup addComponent (@RequestBody ComponentBackupDto componentBackupDto) {
         return componentBackupService.addComponent(componentBackupDto);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public @ResponseBody ComponentBackupDto updateComponent (@RequestBody ComponentBackupDto componentBackupDto) {
+    public @ResponseBody ComponentBackup updateComponent (@RequestBody ComponentBackupDto componentBackupDto) {
         return componentBackupService.updateComponentDto(componentBackupDto);
     }
 
